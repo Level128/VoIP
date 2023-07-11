@@ -65,7 +65,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
 
     // https://github.com/webpack-contrib/mini-css-extract-plugin
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "static/css/[name].css"
+    }),
 
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
