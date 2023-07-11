@@ -18,5 +18,12 @@ module.exports = {
     source: 'src',
     img: 'src',
     image: 'xlink:href'
+  },
+  // https://v3-migration.vuejs.org/migration-build.html
+  // allow compatitibility with vue2 items
+  compilerOptions: {
+    compatConfig: {
+      MODE: 2
+    }
   }
 }

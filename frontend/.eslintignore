@@ -3,3 +3,5 @@
 /dist/
 /*.js
 /test/unit/coverage/
+cbor.js
+base64url-arraybuffer.js

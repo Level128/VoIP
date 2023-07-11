@@ -161,7 +161,6 @@
         <div class="loading-bar" v-if="chatListLoader">
           <div class="blue-bar"></div>
         </div>
-        <!-- v-chat-scroll="{smooth: true, notSmoothOnInit: true}" -->
         <div
           class="chat"
           id="chat-container"
@@ -802,7 +801,7 @@ export default {
         data: {
           user: this.userdata._id,
           number: { telnyx_number, _id },
-          profile: this.activeProfile?.id,
+          profile: this.activeProfile.id,
         },
         url: "setting/message-list",
       };
