@@ -212,7 +212,7 @@
                   <span v-else> {{ message.message }} </span>
                 </div>
                 <div class="time">
-                  {{ message.created_at | moment("LLL") }}
+                  {{  getLongDate(message.created_at) }}
                   <!-- January 1, 2000 10:00 AM -->
                 </div>
               </div>
@@ -888,6 +888,9 @@ export default {
       ret += "" + secs;
       return ret;
     },
+    getLongDate(time) {
+      return moment(time).format('LLL');
+    }
   },
 };
 </script>

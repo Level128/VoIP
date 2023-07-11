@@ -116,7 +116,7 @@
           </div>
 
           <div class="align-self-center text-end me-3">
-          <span class="time">{{ item.created_at | moment("lll") }}</span> <!-- Jan 1, 2000 10:00 AM -->
+          <span class="time">{{ getLongDate(item.created_at) }}</span> <!-- Jan 1, 2000 10:00 AM -->
           <span
             class="badge message_count bg-success" :id="item._id"
             v-if="item.isview > 0"
@@ -853,6 +853,9 @@ export default {
             console.log(e)
           })
       }
+    },
+    getLongDate(time) {
+      return moment(time).format('LLL');
     }
   }
 }
