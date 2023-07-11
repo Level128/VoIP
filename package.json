@@ -11,7 +11,6 @@
   "author": "Operation Privacy",
   "license": "",
   "dependencies": {
-    "@sendgrid/mail": "^7.4.6",
     "axios": "^0.23.0",
     "base64url": "^3.0.1",
     "bcrypt": "^5.0.1",
