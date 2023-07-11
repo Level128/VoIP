@@ -290,14 +290,14 @@
             class="form-control chat-input"
             v-model="sms.message"
             placeholder="Type Message here"
-            :class="{ 'is-invalid': submitted2 && $v.sms.message.$error }"
+            :class="{ 'is-invalid': submitted2 && v$.sms.message.$error }"
           >
           </textarea>
           <div
-            v-if="submitted2 && $v.sms.message.$error"
+            v-if="submitted2 && v$.sms.message.$error"
             class="invalid-feedback"
           >
-            <span v-if="!$v.sms.message.required">Message is required</span>
+            <span v-if="!v$.sms.message.required">Message is required</span>
           </div>
         </div>
         <div class="input-group mb-3">
@@ -350,7 +350,8 @@
   </div>
 </template>
 <script>
-import { required } from "vuelidate/lib/validators";
+import useValidate from '@vuelidate/core'
+import { required } from "@vuelidate/validators";
 import NumberList from "./inbox/NumberList.vue";
 import VueTagsInput from "@johmun/vue-tags-input";
 import ThemeButton from "@/components/ThemeButton.vue";
@@ -359,6 +360,8 @@ import Setting from "./setting/Setting.vue";
 import CallView from "@/components/CallView.vue";
 import CheckDir from "@/components/CheckDir.vue";
 import { EventBus } from "@/event-bus";
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 const io = require("socket.io-client");
 export default {
   name: "dashboard",
@@ -372,6 +375,8 @@ export default {
   },
   data() {
     return {
+      v$: useValidate(),
+      cookie$: cookies,
       isLoading: false,
       fullPage: true,
       contacts: [],
@@ -440,7 +445,7 @@ export default {
       }, 1500);
     });
 
-    if (!this.$cookie.get("access_token")) {
+    if (!this.cookie$.get("access_token")) {
       this.$router.push("/");
     }
     this.updateVw();
@@ -458,9 +463,11 @@ export default {
       }
     });
     // this.userdata = JSON.parse(localStorage.getItem('userdata'))
-    this.userdata = JSON.parse(this.$cookie.get("userdata"));
-    this.access_token = this.$cookie.get("access_token");
-    this.socket.emit("join_profile_channel", this.userdata._id.toString());
+    this.userdata = JSON.parse(this.cookie$.get("userdata"));
+    this.access_token = this.cookie$.get("access_token");
+    if (this.userdata !== null) {
+      this.socket.emit("join_profile_channel", this.userdata._id.toString());
+    }
 
     this.socket.on("user_message", function (data) {
       if ($this.activeChatData) {
@@ -828,7 +835,7 @@ export default {
     },
     handleSubmit2(e) {
       this.submitted2 = true;
-      this.$v.$touch();
+      this.v$.$touch();
       this.isLoading = true;
       if (this.tags.length <= 0) {
         this.$swal({
@@ -843,7 +850,7 @@ export default {
         numbers.push(this.tags[i].text);
       }
       // return
-      if (!this.$v.sms.message.$error || this.uploadedImages.length > 0) {
+      if (!this.v$.sms.message.$error || this.uploadedImages.length > 0) {
         this.commonSendMessage(numbers, this.sms.message);
       } else {
         this.$swal({

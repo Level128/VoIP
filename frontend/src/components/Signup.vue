@@ -8,11 +8,11 @@
                   <b-input-group-prepend is-text>
                     <b-icon icon="person-fill"></b-icon>
                   </b-input-group-prepend>
-                <input class="form-control chat-input" type="text" placeholder="Username" v-model="user.email" :class="{ 'is-invalid': submitted && $v.user.email.$error }" title="Enter Username">
+                <input class="form-control chat-input" type="text" placeholder="Username" v-model="user.email" :class="{ 'is-invalid': submitted && v$.user.email.$error }" title="Enter Username">
                 </b-input-group>
-                <div v-if="submitted && $v.user.email.$error" class="invalid-feedback">
-                  <span v-if="!$v.user.email.required">Username is required</span>
-                  <span v-if="!$v.user.email.minLength">Please enter a valid Username</span>
+                <div v-if="submitted && v$.user.email.$error" class="invalid-feedback">
+                  <span v-if="!v$.user.email.required">Username is required</span>
+                  <span v-if="!v$.user.email.minLength">Please enter a valid Username</span>
                 </div>
               </div>
               <div class="form-group mb-2 mt-4">
@@ -20,11 +20,11 @@
                   <b-input-group-prepend is-text>
                     <b-icon icon="shield-lock"></b-icon>
                   </b-input-group-prepend>
-                <input class="chat-input form-control" v-model="user.password"  type="password" placeholder="Password" :class="{ 'is-invalid': submitted && $v.user.password.$error }" title="Enter Password">
+                <input class="chat-input form-control" v-model="user.password"  type="password" placeholder="Password" :class="{ 'is-invalid': submitted && v$.user.password.$error }" title="Enter Password">
                 </b-input-group>
-                <div v-if="submitted && $v.user.password.$error" class="invalid-feedback">
-                    <span v-if="!$v.user.password.required">Password is required</span>
-                    <span v-if="!$v.user.password.minLength">Please enter a valid password</span>
+                <div v-if="submitted && v$.user.password.$error" class="invalid-feedback">
+                    <span v-if="!v$.user.password.required">Password is required</span>
+                    <span v-if="!v$.user.password.minLength">Please enter a valid password</span>
                 </div>
               </div>
               <div class="form-group mb-2 mt-2">
@@ -32,11 +32,11 @@
                   <b-input-group-prepend is-text>
                     <b-icon icon="shield-lock"></b-icon>
                   </b-input-group-prepend>
-                <input class="chat-input form-control" v-model="user.c_password"  type="password" placeholder="Confirm Password" id="clogin-input" :class="{ 'is-invalid': submitted && $v.user.c_password.$error }" title="Enter Password Again">
+                <input class="chat-input form-control" v-model="user.c_password"  type="password" placeholder="Confirm Password" id="clogin-input" :class="{ 'is-invalid': submitted && v$.user.c_password.$error }" title="Enter Password Again">
                 </b-input-group>
-                <div v-if="submitted && $v.user.c_password.$error" class="invalid-feedback">
-                    <span v-if="!$v.user.c_password.required">Password is required<br></span>
-                    <span v-if="!$v.user.c_password.sameAsPassword">Password and confirm password are not match!</span>
+                <div v-if="submitted && v$.user.c_password.$error" class="invalid-feedback">
+                    <span v-if="!v$.user.c_password.required">Password is required<br></span>
+                    <span v-if="!v$.user.c_password.sameAsPassword">Password and confirm password are not match!</span>
                 </div>
               </div>
               <div class="d-grid">
@@ -64,11 +64,13 @@
 
 <script>
 
-import { required, minLength, sameAs } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required, minLength, sameAs } from '@vuelidate/validators'
 export default {
   name: 'Signup',
   data () {
     return {
+      v$: useValidate(),
       version: process.env.VERSION,
       user: {
         email: '',
@@ -99,8 +101,8 @@ export default {
     handleSubmit (e) {
       e.preventDefault()
       this.submitted = true
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         return
       }
 

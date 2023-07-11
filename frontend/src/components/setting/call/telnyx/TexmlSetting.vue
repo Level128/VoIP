@@ -7,11 +7,11 @@
           </div>
           <div class="form-group mt-2">
             <label>Webhook Fallback URL</label>
-            <input class="form-control" name="url" v-model="form.url" placeholder="Enter Webhook Fallback URL" :class="{ 'is-invalid': submitted3 && $v.form.url.$error }" />
-            <div v-if="submitted3 && $v.form.url.$error" class="invalid-feedback">
-                <span v-if="!$v.form.url.required"> Url Is Required</span>
-                <span v-if="!$v.form.url.url">Please enter valid Url</span>
-                <!-- <span v-if="!$v.form.email.email">Please enter valid email</span> -->
+            <input class="form-control" name="url" v-model="form.url" placeholder="Enter Webhook Fallback URL" :class="{ 'is-invalid': submitted3 && v$.form.url.$error }" />
+            <div v-if="submitted3 && v$.form.url.$error" class="invalid-feedback">
+                <span v-if="!v$.form.url.required"> Url Is Required</span>
+                <span v-if="!v$.form.url.url">Please enter valid Url</span>
+                <!-- <span v-if="!v$.form.email.email">Please enter valid email</span> -->
             </div>
           </div>
           <div class="form-group">
@@ -22,13 +22,15 @@
 </template>
 <script>
 import { post } from '../../../../core/module/common.module'
-import { required, helpers } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required, helpers } from '@vuelidate/validators'
 // eslint-disable-next-line no-useless-escape
 const url = helpers.regex('phonenumber', /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)
 
 export default {
   data () {
     return {
+      v$: useValidate(),
       form: {
         url: '',
         main_url: ''
@@ -73,8 +75,8 @@ export default {
     handleSubmit (e) {
       this.submitted3 = true
       // stop here if form is invalid
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         return
       }
       var data = this.form

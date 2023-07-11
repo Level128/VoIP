@@ -9,11 +9,11 @@
                   <b-input-group-prepend is-text>
                     <b-icon icon="person-fill"></b-icon>
                   </b-input-group-prepend>
-                <input class="form-control chat-input" type="text" placeholder="Username" v-model="user.email" :class="{ 'is-invalid': submitted && $v.user.email.$error }" title="Enter Username">
+                <input class="form-control chat-input" type="text" placeholder="Username" v-model="user.email" :class="{ 'is-invalid': submitted && v$.user.email.$error }" title="Enter Username">
                  </b-input-group>
-                <div v-if="submitted && $v.user.email.$error" class="invalid-feedback">
-                  <span v-if="!$v.user.email.required">Username is required</span>
-                  <span v-if="!$v.user.email.minLength">Username is invalid</span>
+                <div v-if="submitted && v$.user.email.$error" class="invalid-feedback">
+                  <span v-if="!v$.user.email.required">Username is required</span>
+                  <span v-if="!v$.user.email.minLength">Username is invalid</span>
                 </div>
               </div>
               <div class="form-group mb-2 mt-4">
@@ -21,11 +21,11 @@
                   <b-input-group-prepend is-text>
                     <b-icon icon="shield-lock"></b-icon>
                   </b-input-group-prepend>
-                <input class="chat-input form-control" v-model="user.password"  type="password" placeholder="Password" :class="{ 'is-invalid': submitted && $v.user.password.$error }" title="Enter Password">
+                <input class="chat-input form-control" v-model="user.password"  type="password" placeholder="Password" :class="{ 'is-invalid': submitted && v$.user.password.$error }" title="Enter Password">
                </b-input-group>
-                <div v-if="submitted && $v.user.password.$error" class="invalid-feedback">
-                    <span v-if="!$v.user.password.required">Password is required</span>
-                    <span v-if="!$v.user.password.minLength">Password is invalid</span>
+                <div v-if="submitted && v$.user.password.$error" class="invalid-feedback">
+                    <span v-if="!v$.user.password.required">Password is required</span>
+                    <span v-if="!v$.user.password.minLength">Password is invalid</span>
                 </div>
               </div>
               <div class="d-grid">
@@ -124,7 +124,10 @@
 import { decode, encode } from '../base64url-arraybuffer'
 import { post } from '../core/module/common.module'
 import ThemeButton from '@/components/ThemeButton.vue'
-import { required, minLength } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required, minLength } from '@vuelidate/validators'
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 // import { constants } from 'zlib'
 // const CBOR = require('cbor-js')
 export default {
@@ -132,6 +135,8 @@ export default {
   components: { ThemeButton },
   data () {
     return {
+      v$: useValidate(),
+      cookie$: cookies,
       baseurl: '',
       switch1: true,
       otpScreen: false,
@@ -185,7 +190,7 @@ export default {
       this.$store
         .dispatch(post, request)
         .then((response) => {
-          if (this.$cookie.get('access_token')) {
+          if (this.cookie$.get('access_token')) {
             // alert('login')
             if (response.data.status === 'nodir' || response.data.status === 'no-name') {
               this.$router.push(`/${response.data.dir}/dashboard`)
@@ -252,8 +257,8 @@ export default {
     handleSubmit (e) {
       e.preventDefault()
       this.submitted = true
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         return
       }
 

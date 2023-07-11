@@ -73,8 +73,8 @@
                 <form @submit.prevent="handleSubmit">
                   <div class=" form-group m-auto mb-2">
                     <label>First Name</label>
-                    <input class="form-control" type="text" placeholder="First Name" v-model="form.first_name" id="first_name" name="first_name" :class="{ 'is-invalid': submitted && $v.form.first_name.$error }"  />
-                    <div v-if="submitted && !$v.form.first_name.required" class="invalid-feedback">First Name is required</div>
+                    <input class="form-control" type="text" placeholder="First Name" v-model="form.first_name" id="first_name" name="first_name" :class="{ 'is-invalid': submitted && v$.form.first_name.$error }"  />
+                    <div v-if="submitted && !v$.form.first_name.required" class="invalid-feedback">First Name is required</div>
                   </div>
                   <div class="form-group m-auto mb-2">
                     <label>Last Name</label>
@@ -82,9 +82,9 @@
                   </div>
                   <div class="form-group m-auto mb-2">
                     <label>Number</label>
-                    <input class="form-control" type="text" placeholder="Number" v-model="form.number" id="number" name="number" :class="{ 'is-invalid': submitted && $v.form.number.$error }"  />
-                    <div v-if="submitted && !$v.form.number.required" class="invalid-feedback">Number is required</div>
-                    <div v-if="submitted && !$v.form.number.phonenumber" class="invalid-feedback">Please enter valid number. </div>
+                    <input class="form-control" type="text" placeholder="Number" v-model="form.number" id="number" name="number" :class="{ 'is-invalid': submitted && v$.form.number.$error }"  />
+                    <div v-if="submitted && !v$.form.number.required" class="invalid-feedback">Number is required</div>
+                    <div v-if="submitted && !v$.form.number.phonenumber" class="invalid-feedback">Please enter valid number. </div>
                   </div>
 
                   <div class="form-group m-auto mb-2">
@@ -121,7 +121,8 @@
 </template>
 <script>
 import { post } from '../../core/module/common.module'
-import { required, helpers } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required, helpers } from '@vuelidate/validators'
 import Papa from 'papaparse'
 import { EventBus } from '@/event-bus'
 // eslint-disable-next-line no-useless-escape
@@ -130,6 +131,7 @@ export default {
   props: ['contacts'],
   data () {
     return {
+      v$: useValidate(),
       access_token: null,
       headers: null,
       baseurl: '',
@@ -280,8 +282,8 @@ export default {
     handleSubmit (e) {
       this.submitted = true
       // stop here if form is invalid
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         return
       }
       // eslint-disable-next-line no-undef

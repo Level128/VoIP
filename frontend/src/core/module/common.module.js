@@ -1,6 +1,9 @@
 import ApiService from '@/core/services/api.service'
 import router from '../../router'
 import Vue from 'vue'
+import Swal from 'sweetalert2'
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 // action types
 export const VERIFY_AUTH = 'verifyAuth'
 export const LOGIN = 'login'
@@ -22,20 +25,20 @@ export default {
           })
           .catch(({ response }) => {
             if (response.status === 401) {
-              Vue.swal.fire({
+              Swal.fire({
                 title: 'Error',
                 text: 'Unauthorized Access!',
                 icon: 'error',
                 confirmButtonClass: 'btn btn-secondary',
                 heightAuto: false
               })
-              Vue.cookie.delete('access_token')
-              Vue.cookie.delete('userdata')
+              cookies.remove('access_token')
+              cookies.remove('userdata')
               var path = window.location.pathname.split('/')[1]
               router.push(`/${path}/`)
             }
             if (response.status === 400) {
-              Vue.swal.fire({
+              Swal.fire({
                 title: 'Error',
                 text: response.data.message,
                 icon: 'error',
@@ -48,8 +51,8 @@ export default {
       })
     },
     [get] (context, request) {
-      console.log(window.location.pathname)
-      console.log(request)
+      // console.log(window.location.pathname)
+      // console.log(request)
       return new Promise(resolve => {
         ApiService.setHeader()
         ApiService.get(request.url)
@@ -58,20 +61,20 @@ export default {
           })
           .catch(({ response }) => {
             if (response.status === 401) {
-              Vue.swal.fire({
+              Swal.fire({
                 title: 'Error',
                 text: response.data.error,
                 icon: 'error',
                 confirmButtonClass: 'btn btn-secondary',
                 heightAuto: false
               })
-              Vue.cookie.delete('access_token')
-              Vue.cookie.delete('userdata')
+              cookies.remove('access_token')
+              cookies.remove('userdata')
               var path = window.location.pathname.split('/')[1]
               router.push(`/${path}/`)
             }
             if (response.status === 400) {
-              Vue.swal.fire({
+              Swal.fire({
                 title: 'Error',
                 text: response.data.message,
                 icon: 'error',

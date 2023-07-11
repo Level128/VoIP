@@ -154,13 +154,13 @@
                   type="text"
                   placeholder="Alias/Name"
                   v-model="user.profile"
-                  :class="{ 'is-invalid': submitted && $v.user.profile.$error }"
+                  :class="{ 'is-invalid': submitted && v$.user.profile.$error }"
                 />
                 <div
-                  v-if="submitted && $v.user.profile.$error"
+                  v-if="submitted && v$.user.profile.$error"
                   class="invalid-feedback"
                 >
-                  <span v-if="!$v.user.profile.required"
+                  <span v-if="!v$.user.profile.required"
                     >Profile is required</span
                   >
                 </div>
@@ -197,13 +197,13 @@
                   type="text"
                   placeholder="Telnyx API Key"
                   v-model="user.api_key"
-                  :class="{ 'is-invalid': submitted && $v.user.api_key.$error && user.profile == '' }"
+                  :class="{ 'is-invalid': submitted && v$.user.api_key.$error && user.profile == '' }"
                 />
                 <div
-                  v-if="submitted && $v.user.api_key.$error && user.profile == ''"
+                  v-if="submitted && v$.user.api_key.$error && user.profile == ''"
                   class="invalid-feedback"
                 >
-                  <span v-if="!$v.user.api_key.required"
+                  <span v-if="!v$.user.api_key.required"
                     >API Key is required</span
                   >
                 </div>
@@ -227,7 +227,7 @@
                     class=""
                     v-model="user.number"
                     :class="{
-                      'is-invalid': submitted && $v.user.number.$error && user.profile == '',
+                      'is-invalid': submitted && v$.user.number.$error && user.profile == '',
                     }"
                   >
                     <option
@@ -239,10 +239,10 @@
                     </option>
                   </select>
                   <div
-                    v-if="submitted && $v.user.number.$error && user.profile == ''"
+                    v-if="submitted && v$.user.number.$error && user.profile == ''"
                     class="invalid-feedback"
                   >
-                    <span v-if="!$v.user.number.required"
+                    <span v-if="!v$.user.number.required"
                       >Number is required</span
                     >
                   </div>
@@ -282,14 +282,14 @@
                   placeholder="Twilio SID"
                   v-model="user.twilio_sid"
                   :class="{
-                    'is-invalid': submitted && $v.user.twilio_sid.$error && user.profile == '',
+                    'is-invalid': submitted && v$.user.twilio_sid.$error && user.profile == '',
                   }"
                 />
                 <div
-                  v-if="submitted && $v.user.twilio_sid.$error && user.profile == ''"
+                  v-if="submitted && v$.user.twilio_sid.$error && user.profile == ''"
                   class="invalid-feedback"
                 >
-                  <span v-if="!$v.user.twilio_sid.required"
+                  <span v-if="!v$.user.twilio_sid.required"
                     >Twilio sid is required</span
                   >
                 </div>
@@ -304,9 +304,9 @@
                 </label>
               </div>
               <div class="col-12 col-sm col-lg-9 m-auto">
-                <input class="form-control " type="text" placeholder="Twilio Token" v-model="user.twilio_token" :class="{ 'is-invalid': submitted && $v.user.twilio_token.$error && user.profile == '' }">
-                <div v-if="submitted && $v.user.twilio_token.$error && user.profile == ''" class="invalid-feedback">
-                  <span v-if="!$v.user.twilio_token.required">Twilio token is required</span>
+                <input class="form-control " type="text" placeholder="Twilio Token" v-model="user.twilio_token" :class="{ 'is-invalid': submitted && v$.user.twilio_token.$error && user.profile == '' }">
+                <div v-if="submitted && v$.user.twilio_token.$error && user.profile == ''" class="invalid-feedback">
+                  <span v-if="!v$.user.twilio_token.required">Twilio token is required</span>
                 </div>
               </div>
             </div>
@@ -319,11 +319,11 @@
               </div>
               <div class="col col-lg-6 m-auto">
                 <div class="form-group">
-                  <select class="" v-model="user.twilio_number"  :class="{ 'is-invalid': submitted && $v.user.twilio_number.$error && user.profile == '' }">
+                  <select class="" v-model="user.twilio_number"  :class="{ 'is-invalid': submitted && v$.user.twilio_number.$error && user.profile == '' }">
                     <option v-for="twilioNumber in twilioNumbers" :key="twilioNumber.sid" :value="twilioNumber.phoneNumber">{{ twilioNumber.phoneNumber }}</option>
                   </select>
-                  <div v-if="submitted && $v.user.twilio_number.$error && user.profile == ''" class="invalid-feedback">
-                    <span v-if="!$v.user.twilio_number.required">Number is required</span>
+                  <div v-if="submitted && v$.user.twilio_number.$error && user.profile == ''" class="invalid-feedback">
+                    <span v-if="!v$.user.twilio_number.required">Number is required</span>
                   </div>
                 </div>
               </div>
@@ -348,17 +348,22 @@
 import ThemeButton from '@/components/ThemeButton.vue'
 import ProfileView from '@/components/setting/ProfileView.vue'
 import Contact from '@/components/setting/Contact.vue'
-import { required } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 import { get, post } from '../../core/module/common.module'
 import PullToRefresh from 'pulltorefreshjs'
 import Setting from '@/components/setting/Setting.vue'
 import { EventBus } from '@/event-bus'
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 export default {
   components: {
     ProfileView, ThemeButton, Contact, Setting
   },
   data () {
     return {
+      v$: useValidate(),
+      cookie$: cookies,
       user: {
         api_key: '',
         number: '',
@@ -406,8 +411,8 @@ export default {
     if (baseUrl === 'http://localhost:8080') {
       this.baseurl = 'http://localhost:3000'
     }
-    this.userdata = JSON.parse(this.$cookie.get('userdata'))
-    this.access_token = this.$cookie.get('access_token')
+    this.userdata = JSON.parse(this.cookie$.get('userdata'))
+    this.access_token = this.cookie$.get('access_token')
     this.headers = {
       headers: {
         token: this.access_token
@@ -542,8 +547,8 @@ export default {
       // this.$emit('message', id)
     },
     logout () {
-      this.$cookie.delete('access_token')
-      this.$cookie.delete('userdata')
+      this.cookie$.remove('access_token')
+      this.cookie$.remove('userdata')
       window.location.href = `/${this.$route.params.appdirectory}/`
     },
     getNumberList () {
@@ -717,12 +722,12 @@ export default {
     },
     handleSubmit (e) {
       this.submitted = true
-      this.$v.$touch()
+      this.v$.$touch()
       if (
         // eslint-disable-next-line eqeqeq
-        (this.user.profile != '' || (this.selected === 'telnyx' && !this.$v.user.api_key.$error && !this.$v.user.number.$error && !this.$v.user.profile.$error)) ||
+        (this.user.profile != '' || (this.selected === 'telnyx' && !this.v$.user.api_key.$error && !this.v$.user.number.$error && !this.v$.user.profile.$error)) ||
         // eslint-disable-next-line eqeqeq
-        (this.user.profile != '' || (this.selected === 'twilio' && !this.$v.user.twilio_sid.$error && !this.$v.user.twilio_token.$error && !this.$v.user.twilio_number.$error && !this.$v.user.profile.$error))
+        (this.user.profile != '' || (this.selected === 'twilio' && !this.v$.user.twilio_sid.$error && !this.v$.user.twilio_token.$error && !this.v$.user.twilio_number.$error && !this.v$.user.profile.$error))
       ) {
         let sid = ''
         if (this.selected === 'telnyx') {
@@ -809,7 +814,7 @@ export default {
                           this.$refs.childComponent.getallProfile()
                           EventBus.$emit('clicked', true)
                           EventBus.$emit('changeProfile2', true)
-                          this.$v.$reset()
+                          this.v$.$reset()
                         }
                         this.isLoading = false
                       })
@@ -835,7 +840,7 @@ export default {
                       this.$refs.childComponent.getallProfile()
                       EventBus.$emit('clicked', true)
                       EventBus.$emit('changeProfile2', true)
-                      this.$v.$reset()
+                      this.v$.$reset()
                     }
                     this.isLoading = false
                   })

@@ -3,42 +3,42 @@
         <!-- @submit.prevent="handleSubmit2" -->
         <form @submit.prevent="handleSubmit" class="ml-2 mr-2">
            <div class="form-group mt-2">
-                <input class="form-control" name="email" v-model="form.email" placeholder="Enter Username" :class="{ 'is-invalid': submitted3 && $v.form.email.$error }" />
-                <div v-if="submitted3 && $v.form.email.$error" class="invalid-feedback">
-                    <span v-if="!$v.form.email.required">Email Is Required</span>
-                    <!-- <span v-if="!$v.form.email.email">Please enter valid email</span> -->
+                <input class="form-control" name="email" v-model="form.email" placeholder="Enter Username" :class="{ 'is-invalid': submitted3 && v$.form.email.$error }" />
+                <div v-if="submitted3 && v$.form.email.$error" class="invalid-feedback">
+                    <span v-if="!v$.form.email.required">Email Is Required</span>
+                    <!-- <span v-if="!v$.form.email.email">Please enter valid email</span> -->
                 </div>
             </div>
             <div class="form-group mt-2">
-                <input class="form-control" name="password" v-model="form.password" placeholder="Enter Password" :class="{ 'is-invalid': submitted3 && $v.form.password.$error }" />
-                <div v-if="submitted3 && $v.form.password.$error" class="invalid-feedback">
-                    <span v-if="!$v.form.password.required">Password Is Required</span>
+                <input class="form-control" name="password" v-model="form.password" placeholder="Enter Password" :class="{ 'is-invalid': submitted3 && v$.form.password.$error }" />
+                <div v-if="submitted3 && v$.form.password.$error" class="invalid-feedback">
+                    <span v-if="!v$.form.password.required">Password Is Required</span>
                 </div>
             </div>
              <div class="form-group mt-2">
-                <input class="form-control" name="sender_email" v-model="form.sender_email" placeholder="Email FROM" :class="{ 'is-invalid': submitted3 && $v.form.sender_email.$error }" />
-                <div v-if="submitted3 && $v.form.to_email.$error" class="invalid-feedback">
-                    <span v-if="!$v.form.sender_email.required">FROM Email is required</span>
-                    <span v-if="!$v.form.sender_email.email">Enter Valid FROM Email</span>
+                <input class="form-control" name="sender_email" v-model="form.sender_email" placeholder="Email FROM" :class="{ 'is-invalid': submitted3 && v$.form.sender_email.$error }" />
+                <div v-if="submitted3 && v$.form.to_email.$error" class="invalid-feedback">
+                    <span v-if="!v$.form.sender_email.required">FROM Email is required</span>
+                    <span v-if="!v$.form.sender_email.email">Enter Valid FROM Email</span>
                 </div>
             </div>
              <div class="form-group mt-2">
-                <input class="form-control" name="to_email" v-model="form.to_email" placeholder="Email TO" :class="{ 'is-invalid': submitted3 && $v.form.to_email.$error }" />
-                <div v-if="submitted3 && $v.form.to_email.$error" class="invalid-feedback">
-                    <span v-if="!$v.form.to_email.required">TO Email is required</span>
-                    <span v-if="!$v.form.to_email.email">Enter Valid TO Email</span>
+                <input class="form-control" name="to_email" v-model="form.to_email" placeholder="Email TO" :class="{ 'is-invalid': submitted3 && v$.form.to_email.$error }" />
+                <div v-if="submitted3 && v$.form.to_email.$error" class="invalid-feedback">
+                    <span v-if="!v$.form.to_email.required">TO Email is required</span>
+                    <span v-if="!v$.form.to_email.email">Enter Valid TO Email</span>
                 </div>
             </div>
             <div class="form-group mt-2">
-                <input class="form-control" name="host" v-model="form.host" placeholder="Enter Host (smtp.domain.com)" :class="{ 'is-invalid': submitted3 && $v.form.host.$error }" />
-                <div v-if="submitted3 && $v.form.host.$error" class="invalid-feedback">
-                    <span v-if="!$v.form.host.required">Host Is Required</span>
+                <input class="form-control" name="host" v-model="form.host" placeholder="Enter Host (smtp.domain.com)" :class="{ 'is-invalid': submitted3 && v$.form.host.$error }" />
+                <div v-if="submitted3 && v$.form.host.$error" class="invalid-feedback">
+                    <span v-if="!v$.form.host.required">Host Is Required</span>
                 </div>
             </div>
             <div class="form-group mt-2">
-                <input class="form-control" name="port" v-model="form.port" placeholder="Enter Port (465 or 587)" :class="{ 'is-invalid': submitted3 && $v.form.port.$error }" />
-                <div v-if="submitted3 && $v.form.port.$error" class="invalid-feedback">
-                    <span v-if="!$v.form.port.required">Port Is Required</span>
+                <input class="form-control" name="port" v-model="form.port" placeholder="Enter Port (465 or 587)" :class="{ 'is-invalid': submitted3 && v$.form.port.$error }" />
+                <div v-if="submitted3 && v$.form.port.$error" class="invalid-feedback">
+                    <span v-if="!v$.form.port.required">Port Is Required</span>
                 </div>
             </div>
             <div class="form-group mt-2">
@@ -69,11 +69,13 @@
     </div>
 </template>
 <script>
-import { required, email } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
 import { post, get } from '../../core/module/common.module'
 export default {
   data () {
     return {
+      v$: useValidate(),
       form: {
         email: '',
         sender_email: '',
@@ -104,8 +106,8 @@ export default {
   methods: {
     handleSubmit (e) {
       this.submitted3 = true
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         return
       }
       var request = {

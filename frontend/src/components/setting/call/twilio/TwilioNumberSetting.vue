@@ -7,11 +7,11 @@
           </div>
           <div class="form-group mt-2">
             <label>CALL HANDLER FAILS</label>
-            <input class="form-control" name="url" v-model="form.voice_url" placeholder="Enter Twiml Fallback Url" :class="{ 'is-invalid': submitted3 && $v.form.voice_url.$error }" />
-            <div v-if="submitted3 && $v.form.voice_url.$error" class="invalid-feedback">
-                <span v-if="!$v.form.voice_url.required">Url Is Required</span>
-                <span v-if="!$v.form.voice_url.url">Please enter valid Url</span>
-                <!-- <span v-if="!$v.form.email.email">Please enter valid email</span> -->
+            <input class="form-control" name="url" v-model="form.voice_url" placeholder="Enter Twiml Fallback Url" :class="{ 'is-invalid': submitted3 && v$.form.voice_url.$error }" />
+            <div v-if="submitted3 && v$.form.voice_url.$error" class="invalid-feedback">
+                <span v-if="!v$.form.voice_url.required">Url Is Required</span>
+                <span v-if="!v$.form.voice_url.url">Please enter valid Url</span>
+                <!-- <span v-if="!v$.form.email.email">Please enter valid email</span> -->
             </div>
           </div>
 
@@ -21,11 +21,11 @@
           </div>
           <div class="form-group mt-2">
             <label>MESSAGE HANDLER FAILS</label>
-            <input class="form-control" name="sms_url" v-model="form.sms_url" placeholder="Enter Twiml Fallback Url" :class="{ 'is-invalid': submitted3 && $v.form.sms_url.$error }" />
-            <div v-if="submitted3 && $v.form.sms_url.$error" class="invalid-feedback">
-                <span v-if="!$v.form.sms_url.required">Url Is Required</span>
-                <span v-if="!$v.form.sms_url.url">Please enter valid Url</span>
-                <!-- <span v-if="!$v.form.email.email">Please enter valid email</span> -->
+            <input class="form-control" name="sms_url" v-model="form.sms_url" placeholder="Enter Twiml Fallback Url" :class="{ 'is-invalid': submitted3 && v$.form.sms_url.$error }" />
+            <div v-if="submitted3 && v$.form.sms_url.$error" class="invalid-feedback">
+                <span v-if="!v$.form.sms_url.required">Url Is Required</span>
+                <span v-if="!v$.form.sms_url.url">Please enter valid Url</span>
+                <!-- <span v-if="!v$.form.email.email">Please enter valid email</span> -->
             </div>
           </div>
           <div class="form-group">
@@ -36,13 +36,15 @@
 </template>
 <script>
 import { post } from '../../../../core/module/common.module'
-import { required, helpers } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required, helpers } from '@vuelidate/validators'
 // eslint-disable-next-line no-useless-escape
 const url = helpers.regex('phonenumber', /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)
 
 export default {
   data () {
     return {
+      v$: useValidate(),
       form: {
         voice_url: '',
         voice_main_url: '',
@@ -95,8 +97,8 @@ export default {
     handleSubmit (e) {
       this.submitted3 = true
       // stop here if form is invalid
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         return
       }
       var data = this.form

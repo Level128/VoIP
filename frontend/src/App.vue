@@ -32,7 +32,7 @@ export default {
       this.$store
         .dispatch(get, request)
         .then((response) => {
-          console.log(response.update)
+          // console.log(response.update)
           if (response.update === 'true') {
             this.old_version = true
           } else {

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 
 /**
  * Service to call HTTP request via Axios
@@ -13,7 +15,6 @@ const ApiService = {
     if (baseUrl === 'http://localhost:8080') {
       baseurl2 = 'http://localhost:3000'
     }
-    console.log(baseurl2)
     Vue.use(VueAxios, axios)
     Vue.axios.defaults.baseURL = baseurl2 + '/api'
   },
@@ -28,7 +29,7 @@ const ApiService = {
     // eslint-disable-next-line camelcase
     ] = 'no-cache'
     // eslint-disable-next-line camelcase
-    var access_token = Vue.cookie.get('access_token')
+    const access_token = cookies.get('access_token')
     // eslint-disable-next-line standard/computed-property-even-spacing
     Vue.axios.defaults.headers.common[
       'token'

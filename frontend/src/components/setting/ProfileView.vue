@@ -37,9 +37,9 @@
       <span class="small text-secondary">Profile</span>
       <form @submit.prevent="handleSubmit" class="ml-2 mr-2">
         <div class="form-group mt-2">
-          <input class="form-control chat-input" v-model="form.profile" name="profile" placeholder="Enter Profile" :class="{ 'is-invalid': submitted3 && $v.form.profile.$error }" />
-          <div v-if="submitted3 && $v.form.profile.$error" class="invalid-feedback">
-            <span v-if="!$v.form.profile.required">Profile are required</span>
+          <input class="form-control chat-input" v-model="form.profile" name="profile" placeholder="Enter Profile" :class="{ 'is-invalid': submitted3 && v$.form.profile.$error }" />
+          <div v-if="submitted3 && v$.form.profile.$error" class="invalid-feedback">
+            <span v-if="!v$.form.profile.required">Profile are required</span>
           </div>
         </div>
         <div class="d-grid d-md-flex mt-3">
@@ -52,12 +52,17 @@
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators'
+import useValidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 import { post } from '../../core/module/common.module'
 import { EventBus } from '@/event-bus'
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 export default {
   data () {
     return {
+      v$: useValidate(),
+      cookie$: cookies,
       access_token: null,
       headers: null,
       baseurl: '',
@@ -76,8 +81,8 @@ export default {
     }
   },
   mounted () {
-    this.userdata = JSON.parse(this.$cookie.get('userdata'))
-    this.access_token = this.$cookie.get('access_token')
+    this.userdata = JSON.parse(this.cookie$.get('userdata'))
+    this.access_token = this.cookie$.get('access_token')
     this.headers = {
       headers: {
         token: this.access_token
@@ -152,8 +157,8 @@ export default {
     handleSubmit (e) {
       this.submitted3 = true
       EventBus.$emit('toggleLoader', true)
-      this.$v.$touch()
-      if (this.$v.$invalid) {
+      this.v$.$touch()
+      if (this.v$.$invalid) {
         return
       }
       var request = {
