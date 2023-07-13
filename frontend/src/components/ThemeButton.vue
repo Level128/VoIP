@@ -1,70 +1,60 @@
 <template>
   <div v-if="idHide === 'false'">
-    <input
-      @change="toggleTheme"
-      id="checkbox"
-      type="checkbox"
-      class="switch-checkbox"
-    />
+    <input @change="toggleTheme" id="checkbox" type="checkbox" class="switch-checkbox" />
     <label for="checkbox" class="switch-label switch-label-mode">
       <span>🌙</span>
       <span>☀️</span>
-      <div
-        class="switch-toggle"
-        :class="{ 'switch-toggle-checked': userTheme === 'dark-theme' }"
-      ></div>
+      <div class="switch-toggle" :class="{ 'switch-toggle-checked': userTheme === 'dark-theme' }"></div>
     </label>
   </div>
 </template>
 
-<script>
-export default {
-  props: ['idHide'],
-  mounted () {
-    var getTheme = localStorage.getItem('user-theme')
-    let initUserTheme
-    if (getTheme) {
-      initUserTheme = getTheme
-    } else {
-      initUserTheme = this.getMediaPreference()
-    }
-    this.setTheme(initUserTheme)
-  },
+<script setup>
+import { defineProps, onMounted, ref, toRefs } from 'vue'
 
-  data () {
-    return {
-      userTheme: 'light-theme'
-    }
-  },
+const props = defineProps({
+  idHide: String
+})
+const { idHide } = toRefs(props)
+const userTheme = ref('light-theme')
 
-  methods: {
-    toggleTheme () {
-      const activeTheme = localStorage.getItem('user-theme')
-      if (activeTheme === 'light-theme') {
-        this.setTheme('dark-theme')
-      } else {
-        this.setTheme('light-theme')
-      }
-    },
+onMounted(() => {
+  const getTheme = localStorage.getItem('user-theme')
+  let initUserTheme
+  if (getTheme) {
+    initUserTheme = getTheme
+  } else {
+    initUserTheme = getMediaPreference()
+  }
+  setTheme(initUserTheme)
+})
 
-    setTheme (theme) {
-      localStorage.setItem('user-theme', theme)
-      this.userTheme = theme
-      document.documentElement.className = theme
-    },
-
-    getMediaPreference () {
-      const hasDarkPreference = window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      ).matches
-      if (hasDarkPreference) {
-        return 'dark-theme'
-      } else {
-        return 'light-theme'
-      }
-    }
+function toggleTheme () {
+  const activeTheme = localStorage.getItem('user-theme')
+  if (activeTheme === 'light-theme') {
+    setTheme('dark-theme')
+  } else {
+    setTheme('light-theme')
   }
 }
+
+function setTheme (theme) {
+  localStorage.setItem('user-theme', theme)
+  userTheme.value = theme
+  document.documentElement.className = theme
+}
+
+function getMediaPreference () {
+  const hasDarkPreference = window.matchMedia(
+    '(prefers-color-scheme: dark)'
+  ).matches
+  if (hasDarkPreference) {
+    return 'dark-theme'
+  } else {
+    return 'light-theme'
+  }
+}
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
