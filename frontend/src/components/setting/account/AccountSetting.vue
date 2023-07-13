@@ -51,85 +51,85 @@
       </div>
     </div>
 </template>
-<script>
+
+<script setup>
 import ChangeUsername from './ChangeUsername.vue'
 import ChangePassword from './ChangePassword.vue'
 import { post } from '../../../core/module/common.module'
 import CallSetting from '../CallSetting.vue'
-export default {
-  components: { ChangeUsername, ChangePassword, CallSetting },
-  data () {
-    return {
-      activeMenu: 'setting'
-    }
-  },
-  mounted: function () {},
-  methods: {
-    enableMenu (menu) {
-      this.activeMenu = menu
-    },
-    deleteAccount () {
-      this.$swal.fire({
-        icon: 'warning',
-        text: 'Please enter your account password to delete account. This process is irreversible',
-        title: 'Delete Account',
-        input: 'password',
-        inputAttributes: {
-          autocapitalize: 'off'
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Submit',
-        showLoaderOnConfirm: true,
-        preConfirm: (login) => {
-          var request = {
-            data: {password: login},
-            url: 'auth/password/check'
-          }
-          return this.$store
-            .dispatch(post, request)
-            .then((response) => {
-              return response
-            })
-            .catch((e) => {
-              return false
-            })
+import { ref } from 'vue'
+import Swal from 'sweetalert2'
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { useCookies } from 'vue3-cookies'
 
-          /* return fetch(`//api.github.com/users/${login}`)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(response.statusText)
-              }
-              return response.json()
-            })
-            .catch(error => {
-              this.$swal.showValidationMessage(
-                `Request failed: ${error}`
-              )
-            }) */
-        },
-        allowOutsideClick: () => !this.$swal.isLoading()
+const store = useStore()
+const route = useRoute()
+const { cookies } = useCookies()
+const activeMenu = ref('setting')
+
+function enableMenu (menu) {
+  activeMenu.value = menu
+}
+
+function deleteAccount () {
+  Swal.fire({
+    icon: 'warning',
+    text: 'Please enter your account password to delete account. This process is irreversible',
+    title: 'Delete Account',
+    input: 'password',
+    inputAttributes: {
+      autocapitalize: 'off'
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Submit',
+    showLoaderOnConfirm: true,
+    preConfirm: (login) => {
+      const request = {
+        data: { password: login },
+        url: 'auth/password/check'
+      }
+      return store
+        .dispatch(post, request)
+        .then((response) => {
+          return response
+        })
+        .catch((e) => {
+          return false
+        })
+
+      /* return fetch(`//api.github.com/users/${login}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(response.statusText)
+          }
+          return response.json()
+        })
+        .catch(error => {
+          Swal.showValidationMessage(
+            `Request failed: ${error}`
+          )
+        }) */
+    },
+    allowOutsideClick: () => !Swal.isLoading()
+  }).then((result) => {
+    // console.log(result)
+    if (result.isConfirmed) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Account Delete',
+        text: 'Your account deleted successfully',
+        showDenyButton: false,
+        showCancelButton: false,
+        confirmButtonText: 'Ok'
       }).then((result) => {
-        console.log(result)
-        if (result.isConfirmed) {
-          this.$swal.fire({
-            icon: 'success',
-            title: 'Account Delete',
-            text: `Your account deleted successfully`,
-            showDenyButton: false,
-            showCancelButton: false,
-            confirmButtonText: 'Ok'
-          }).then((result) => {
-            this.$cookies.remove('access_token')
-            this.$cookies.remove('userdata')
-            window.location.href = `/${this.$route.params.appdirectory}/`
-            // this.$router.push('/')
-          })
-        }
+        cookies.remove('access_token')
+        cookies.remove('userdata')
+        window.location.href = `/${route.params.appdirectory}/`
+        // router.push('/')
       })
     }
-  }
+  })
 }
-</script>
-<style>
 
-</style>
+</script>
