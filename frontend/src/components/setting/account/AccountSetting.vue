@@ -56,13 +56,10 @@ import ChangeUsername from './ChangeUsername.vue'
 import ChangePassword from './ChangePassword.vue'
 import { post } from '../../../core/module/common.module'
 import CallSetting from '../CallSetting.vue'
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
 export default {
   components: { ChangeUsername, ChangePassword, CallSetting },
   data () {
     return {
-      cookie$: cookies,
       activeMenu: 'setting'
     }
   },
@@ -122,8 +119,8 @@ export default {
             showCancelButton: false,
             confirmButtonText: 'Ok'
           }).then((result) => {
-            this.cookie$.remove('access_token')
-            this.cookie$.remove('userdata')
+            this.$cookies.remove('access_token')
+            this.$cookies.remove('userdata')
             window.location.href = `/${this.$route.params.appdirectory}/`
             // this.$router.push('/')
           })

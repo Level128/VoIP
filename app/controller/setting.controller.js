@@ -16,7 +16,7 @@ const Numbers = require("twilio/lib/rest/Numbers");
 var Contact = require("../model/contact.model");
 var Email = require("../model/email.model");
 const { exists } = require("../model/setting.model");
-const commonHelper = require("../helper/common.helper");
+const {sendEmail, combineURLs } = require("../helper/common.helper");
 const telnyxHelper = require("../helper/telnyx.helper");
 const twilioHelper = require("../helper/twilio.helper");
 
@@ -237,20 +237,22 @@ exports.create = async (req, res) => {
                 ).messagingProfiles.create({
                   name: "VoIP sms Web Application",
                   enabled: true,
-                  webhook_url:
-                    process.env.BASE_URL.trim() +
-                    "api/setting/receive-sms/" +
-                    req.body.type,
+                  webhook_url: combineURLs(
+                    process.env.BASE_URL.trim(),
+                    "api/setting/receive-sms/",
+                    req.body.type
+                  ),
                 });
                 var telnyxSetting = saveTelnyxSetting.data.id;
               } else {
                 await telnyx(req.body.api_key).messagingProfiles.update(
                   settingCheck.setting,
                   {
-                    webhook_url:
-                      process.env.BASE_URL.trim() +
-                      "api/setting/receive-sms/" +
-                      req.body.type,
+                    webhook_url: combineURLs(
+                      process.env.BASE_URL.trim(),
+                      "api/setting/receive-sms/",
+                      req.body.type
+                    ),
                   }
                 );
                 var telnyxSetting = settingCheck.setting;
@@ -403,12 +405,19 @@ exports.create = async (req, res) => {
             );
             if (req.body.override === "true") {
               var twilioUpdatedata = {
-                smsUrl:
-                  process.env.BASE_URL.trim() +
-                  "api/setting/receive-sms/" +
-                  req.body.type,
-                voiceUrl: process.env.BASE_URL.trim() + "api/call/incomming",
-                statusCallback: process.env.BASE_URL.trim() + "api/call/status",
+                smsUrl: combineURLs(
+                  process.env.BASE_URL.trim(),
+                  "api/setting/receive-sms/",
+                  req.body.type
+                ),
+                voiceUrl: combineURLs(
+                  process.env.BASE_URL.trim(),
+                  "api/call/incoming"
+                ),
+                statusCallback: combineURLs(
+                  process.env.BASE_URL.trim(),
+                  "api/call/status"
+                ),
                 voiceApplicationSid: "",
               };
             } else {
@@ -590,7 +599,10 @@ exports.sendSms = async (req, res) => {
               body: req.body.message,
               from: settingCheck.number,
               to: toNumber,
-              statusCallback: `${process.env.BASE_URL.trim()}api/setting/sms-status/twilio`,
+              statusCallback: combineURLs(
+                process.env.BASE_URL.trim(),
+                "api/setting/sms-status/twilio"
+              ),
             };
             if (req.body.media.length > 0) {
               twilioParams.mediaUrl = req.body.media;
@@ -650,7 +662,10 @@ exports.sendSms = async (req, res) => {
               from: settingCheck.number, // Your Telnyx number
               to: toNumber,
               text: req.body.message,
-              webhook_url: `${process.env.BASE_URL.trim()}api/setting/sms-status/telnyx`,
+              webhook_url: combineURLs(
+                process.env.BASE_URL.trim(),
+                "api/setting/sms-status/telnyx"
+              ),
             };
             if (req.body.media.length > 0) {
               telnyxParams.media_urls = req.body.media;
@@ -751,7 +766,12 @@ exports.receiveSms = async (req, res) => {
           request(url)
             .pipe(fs.createWriteStream(`./uploads/${date}/${name}`))
             .on("close", () => console.log("Image downloaded."));
-          savedName = `${process.env.BASE_URL.trim()}uploads/${date}/${name}`;
+            savedName = combineURLs(
+              process.env.BASE_URL.trim(),
+              "uploads",
+              date,
+              name
+            );
           fackMedia.push(savedName);
           /*request(url).pipe(fs.createWriteStream(name))
                     .on('close', () => console.log('Image downloaded.'));
@@ -789,7 +809,12 @@ exports.receiveSms = async (req, res) => {
           request(url)
             .pipe(fs.createWriteStream(`./uploads/${date}/${name}`))
             .on("close", () => console.log("Image downloaded."));
-          savedName = `${process.env.BASE_URL.trim()}uploads/${date}/${name}`;
+            savedName = combineURLs(
+              process.env.BASE_URL.trim(),
+              "uploads",
+              date,
+              name
+            );
           fackMedia.push(savedName);
           // fackMedia.push(messageData.media[i].url)
         }
@@ -854,7 +879,7 @@ exports.receiveSms = async (req, res) => {
               text: "Message received",
               html: `Received Message on ${toNumber}:<br><hr><br><p>${messageText}</p><br><hr><br>`,
             };
-            commonHelper.sendEmail(emailSetting, emailData);
+            sendEmail(emailSetting, emailData);
           } catch (error) {
             // console.log(error)
           }

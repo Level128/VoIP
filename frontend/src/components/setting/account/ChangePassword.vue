@@ -80,7 +80,7 @@ export default {
               password: '',
               c_password: ''
             }
-            // this.cookie$.set('userdata', JSON.stringify(response.data), 30)
+            // this.$cookies.set('userdata', JSON.stringify(response.data), 60*60*24)
           }
         })
         .catch((e) => {

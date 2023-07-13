@@ -18,13 +18,10 @@
 import useValidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { post } from '../../../core/module/common.module'
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
 export default {
   data () {
     return {
       v$: useValidate(),
-      cookie$: cookies,
       form: {
         email: ''
       },
@@ -38,7 +35,7 @@ export default {
   },
   mounted: function () {
     // this.getContacts()
-    var userdata = JSON.parse(this.cookie$.get('userdata'))
+    var userdata = this.$cookies.get('userdata')
     if (userdata.email !== undefined) {
       this.form.email = userdata.email
     }
@@ -58,7 +55,7 @@ export default {
         .dispatch(post, request)
         .then((response) => {
           if (response) {
-            this.cookie.set('userdata', JSON.stringify(response.data), 30)
+            this.$cookies.set('userdata', JSON.stringify(response.data), 60*60*24)
             this.$swal({
               icon: 'success',
               title: 'Success',

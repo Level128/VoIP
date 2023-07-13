@@ -1,9 +1,8 @@
 import ApiService from '@/core/services/api.service'
 import router from '../../router'
-import Vue from 'vue'
 import Swal from 'sweetalert2'
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
+import { useCookies } from 'vue3-cookies'
+const { cookies } = useCookies()
 // action types
 export const VERIFY_AUTH = 'verifyAuth'
 export const LOGIN = 'login'
@@ -34,7 +33,7 @@ export default {
               })
               cookies.remove('access_token')
               cookies.remove('userdata')
-              var path = window.location.pathname.split('/')[1]
+              const path = window.location.pathname.split('/')[1]
               router.push(`/${path}/`)
             }
             if (response.status === 400) {
@@ -70,7 +69,7 @@ export default {
               })
               cookies.remove('access_token')
               cookies.remove('userdata')
-              var path = window.location.pathname.split('/')[1]
+              const path = window.location.pathname.split('/')[1]
               router.push(`/${path}/`)
             }
             if (response.status === 400) {

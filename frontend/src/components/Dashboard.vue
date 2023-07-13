@@ -360,9 +360,10 @@ import Setting from "./setting/Setting.vue";
 import CallView from "@/components/CallView.vue";
 import CheckDir from "@/components/CheckDir.vue";
 import { EventBus } from "@/event-bus";
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
-const io = require("socket.io-client");
+import { io } from "socket.io-client";
+import { combineURLs } from '@/helper';
+const moment = require('moment')
+
 export default {
   name: "dashboard",
   components: {
@@ -376,7 +377,6 @@ export default {
   data() {
     return {
       v$: useValidate(),
-      cookie$: cookies,
       isLoading: false,
       fullPage: true,
       contacts: [],
@@ -445,7 +445,7 @@ export default {
       }, 1500);
     });
 
-    if (!this.cookie$.get("access_token")) {
+    if (!this.$cookies.get("access_token")) {
       this.$router.push("/");
     }
     this.updateVw();
@@ -463,8 +463,8 @@ export default {
       }
     });
     // this.userdata = JSON.parse(localStorage.getItem('userdata'))
-    this.userdata = JSON.parse(this.cookie$.get("userdata"));
-    this.access_token = this.cookie$.get("access_token");
+    this.userdata = this.$cookies.get("userdata");
+    this.access_token = this.$cookies.get("access_token");
     if (this.userdata !== null) {
       this.socket.emit("join_profile_channel", this.userdata._id.toString());
     }
@@ -621,10 +621,10 @@ export default {
       }
     },
     uploadFile(file, i) {
-      var url = `${this.baseurl}/api/media/upload-files`;
+      const fileUploadURL = combineURLs(this.baseurl, '/api/media/upload-files');
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
-      xhr.open("POST", url, true);
+      xhr.open("POST", fileUploadURL, true);
       xhr.setRequestHeader("token", this.access_token);
       var $this = this;
       xhr.upload.addEventListener("progress", function (e) {
@@ -730,7 +730,6 @@ export default {
         });
     },
     sendSms() {
-      this.isLoading = true;
       if (this.messageBody.trim() === "" && this.uploadedImages.length === 0) {
         this.$swal({
           icon: "error",
@@ -740,6 +739,7 @@ export default {
         this.isLoading = false;
         return;
       }
+      this.isLoading = true;
       var activechat = JSON.parse(localStorage.getItem("activenumber"));
       var numbers = [activechat._id];
       this.commonSendMessage(numbers, this.messageBody);
@@ -836,7 +836,6 @@ export default {
     handleSubmit2(e) {
       this.submitted2 = true;
       this.v$.$touch();
-      this.isLoading = true;
       if (this.tags.length <= 0) {
         this.$swal({
           icon: "error",
@@ -845,10 +844,13 @@ export default {
         });
         return;
       }
+      this.isLoading = true;
       var numbers = [];
       for (var i = 0; i < this.tags.length; i++) {
-        numbers.push(this.tags[i].text);
+        numbers.push(this.tags[i]);
       }
+      console.log('numbers', this.tags[0]);
+      console.log('numbers', numbers);
       // return
       if (!this.v$.sms.message.$error || this.uploadedImages.length > 0) {
         this.commonSendMessage(numbers, this.sms.message);

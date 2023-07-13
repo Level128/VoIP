@@ -48,12 +48,20 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     // }
   },
   plugins: [
-    ...(config.dev.cssSourceMap === true ? [new MiniCssExtractPlugin({
-      filename: "static/css/[name].css"
-    })] : []),
+    ...(config.dev.cssSourceMap === true
+      ? [new MiniCssExtractPlugin({
+          filename: utils.assetsPath('css/[name].[contenthash].css')
+        })]
+      : []),
 
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env')
+    }),
+
+    // https://github.com/vuejs/core/tree/main/packages/vue#bundler-build-feature-flags
+    new webpack.DefinePlugin({
+      __VUE_PROD_DEVTOOLS__: true,
+      __VUE_OPTIONS_API__: true
     }),
 
     new webpack.NoEmitOnErrorsPlugin(),

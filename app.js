@@ -2,7 +2,6 @@ const config =  require('./config.js');
 
 const express = require('express')
 const app = express()
-var bodyParser = require('body-parser')
 const cors = require("cors");
 require('dotenv').config()
 const path = require('path');
@@ -125,15 +124,18 @@ if( process.env.HTTPS.trim() === 'true'){
   }) */
 }
 // parse requests of content-type - application/json
-app.use(bodyParser.json({limit: '500mb',parameterLimit: 10000000})); 
+app.use(express.json({limit: '500mb'}))
+// app.use(bodyParser.json({limit: '500mb',parameterLimit: 10000000})); 
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true, limit: '500mb',parameterLimit: 10000000 }));
+app.use(express.urlencoded({extended: true, limi: '500mb', parameterLimit: 10000000}))
+// app.use(bodyParser.urlencoded({ extended: true, limit: '500mb',parameterLimit: 10000000 }));
+
 app.use('/uploads', express.static('uploads'));
 app.use('/src', express.static('src'));
-app.use('/frontend', express.static('frontend'));
-// app.use('/frontend', express.static('frontend'));
-app.use('/frontend/dist/static/', express.static('frontend/dist/static'));
+
+app.use('/frontend', express.static(path.join(__dirname, 'frontend/')));
+app.use('/static', express.static(path.join(__dirname, 'frontend/dist/static')));
 app.get(`/error`, function (req, res) {
   res.sendFile(path.join(__dirname, './error/index.html'));
 })

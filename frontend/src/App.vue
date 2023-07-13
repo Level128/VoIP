@@ -1,19 +1,22 @@
 <template>
   <div id="app">
-    <span v-if="old_version" class="update_ribbon"><a href="https://github.com/0perationPrivacy/VoIP/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">update</a></span>
-    <!--<theme-button style="display:none" />-->
-    <!--<refresh></refresh>-->
-    <router-view/>
+    <span v-if="oldVersion" class="update_ribbon"
+      ><a
+        href="https://github.com/0perationPrivacy/VoIP/blob/main/CHANGELOG.md"
+        target="_blank"
+        rel="noopener noreferrer"
+        >update</a
+      ></span
+    >
+    <RouterView />
   </div>
 </template>
 
 <script>
 import { get } from './core/module/common.module'
-import ThemeButton from '@/components/ThemeButton.vue'
 
 export default {
   name: 'App',
-  components: { ThemeButton },
   data () {
     return {
       old_version: false,
@@ -26,7 +29,7 @@ export default {
   },
   methods: {
     getVersion () {
-      var request = {
+      const request = {
         url: 'auth/get-update-version'
       }
       this.$store

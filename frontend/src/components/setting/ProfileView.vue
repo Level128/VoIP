@@ -56,13 +56,10 @@ import useValidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import { post } from '../../core/module/common.module'
 import { EventBus } from '@/event-bus'
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
 export default {
   data () {
     return {
       v$: useValidate(),
-      cookie$: cookies,
       access_token: null,
       headers: null,
       baseurl: '',
@@ -81,8 +78,8 @@ export default {
     }
   },
   mounted () {
-    this.userdata = JSON.parse(this.cookie$.get('userdata'))
-    this.access_token = this.cookie$.get('access_token')
+    this.userdata = this.$cookies.get('userdata')
+    this.access_token = this.$cookies.get('access_token')
     this.headers = {
       headers: {
         token: this.access_token

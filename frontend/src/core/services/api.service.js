@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
+import { useCookies } from 'vue3-cookies';
+import { combineURLs } from '../../helper'
+const { cookies } = useCookies()
 
 /**
  * Service to call HTTP request via Axios
@@ -16,7 +17,7 @@ const ApiService = {
       baseurl2 = 'http://localhost:3000'
     }
     Vue.use(VueAxios, axios)
-    Vue.axios.defaults.baseURL = baseurl2 + '/api'
+    Vue.axios.defaults.baseURL = combineURLs(baseurl2, '/api')
   },
 
   /**

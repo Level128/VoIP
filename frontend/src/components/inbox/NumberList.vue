@@ -363,7 +363,6 @@ export default {
   data () {
     return {
       v$: useValidate(),
-      cookie$: cookies,
       user: {
         api_key: '',
         number: '',
@@ -411,8 +410,8 @@ export default {
     if (baseUrl === 'http://localhost:8080') {
       this.baseurl = 'http://localhost:3000'
     }
-    this.userdata = JSON.parse(this.cookie$.get('userdata'))
-    this.access_token = this.cookie$.get('access_token')
+    this.userdata = this.$cookies.get('userdata')
+    this.access_token = this.$cookies.get('access_token')
     this.headers = {
       headers: {
         token: this.access_token
@@ -547,8 +546,8 @@ export default {
       // this.$emit('message', id)
     },
     logout () {
-      this.cookie$.remove('access_token')
-      this.cookie$.remove('userdata')
+      this.$cookies.remove('access_token')
+      this.$cookies.remove('userdata')
       window.location.href = `/${this.$route.params.appdirectory}/`
     },
     getNumberList () {
