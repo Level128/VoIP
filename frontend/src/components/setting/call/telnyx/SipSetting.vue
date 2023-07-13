@@ -3,11 +3,11 @@
         <form @submit.prevent="handleSubmitSipSetting" class="ml-2 mr-2">
           <div class="form-group mt-2">
             <label>Webhook URL</label>
-            <input class="form-control main-url-control" name="main_url" v-model="form.main_url" readonly />
+            <input class="form-control main-url-control" name="main_url" v-model="state.form.main_url" readonly />
           </div>
           <div class="form-group mt-2">
             <label>Webhook Fallback URL</label>
-            <input class="form-control" name="url" v-model="form.url" placeholder="Enter Twiml Fallback Url" :class="{ 'is-invalid': isFormSubmitted && v$.form.url.$error }" />
+            <input class="form-control" name="url" v-model="state.form.url" placeholder="Enter Twiml Fallback Url" :class="{ 'is-invalid': isFormSubmitted && v$.form.url.$error }" />
             <div v-if="isFormSubmitted && v$.form.url.$error" class="invalid-feedback">
                 <span v-if="v$.form.url.required.$invalid">Twiml Fallback Url Is Required</span>
                 <span v-if="v$.form.url.url.$invalid">Please enter valid Twiml Fallback Url</span>
