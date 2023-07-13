@@ -1,7 +1,7 @@
 <template>
     <div>
-        <b-button id="incomingCallModel" v-b-modal.modal-tall style="display:none">Launch demo modal</b-button>
-        <b-modal ref="modalTall" class="test-modal" id="modal-tall" hide-footer>
+        <b-button id="incomingCallModel" v-b-modal.modal-dialer style="display:none">Launch demo modal</b-button>
+        <b-modal ref="modalDialer" id="modal-dialer" hide-footer>
           <template #modal-header="{ close }">
             <!-- Emulate built in modal header close button action -->
             <b-button v-bind:class="{ 'd-none': connection }" size="sm" variant="outline-danger" @click="close()">
@@ -205,7 +205,7 @@ export default {
           this.callType = 'twilio'
           Device.setup(tokenData.token)
           Device.incoming((connection) => {
-            callPannel.$refs['modalTall'].show()
+            callPannel.$refs['modalDialer'].show()
             // document.getElementById('incomingCallModel').click()
             callPannel.connection = connection
             callPannel.number = connection.options.callParameters.From
@@ -250,7 +250,7 @@ export default {
                 callPannel.connection = call
                 switch (call.state) {
                   case 'ringing':
-                    callPannel.$refs['modalTall'].show()
+                    callPannel.$refs['modalDialer'].show()
                     // document.getElementById('incomingCallModel').click()
                     callPannel.number = call.options.remoteCallerNumber
                     callPannel.incoming = true
@@ -358,7 +358,7 @@ export default {
         })
       }
       this.call_text = 'Calling ' + n
-      this.$refs['modalTall'].show()
+      this.$refs['modalDialer'].show()
       // this.$refs.myModalRef.show()
       // document.getElementById('incomingCallModel').click()
     },

@@ -14,7 +14,7 @@
               <contact :contacts="contacts" @onaddContact="onaddContact"></contact>
             </div>
             <div class="bd-highlight">
-              <b-icon font-scale="1" icon="telephone" aria-hidden="true" class="m-2" title="Call" @click="$bvModal.show('modal-tall')"  style="cursor:pointer;"></b-icon>
+              <b-icon font-scale="1" icon="telephone" aria-hidden="true" class="m-2" title="Call" @click="$bvModal.show('modal-dialer')"  style="cursor:pointer;"></b-icon>
             </div>
             <div class="bd-highlight">
               <b-icon  v-b-modal.modal-2 font-scale="1" icon="pencil-square" aria-hidden="true" class="m-2" title="Compose" style="cursor:pointer;"></b-icon>
