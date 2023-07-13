@@ -273,12 +273,12 @@
           :options="searchContacts"
         ></v-select>
         <div class="form-group mt-4">
-          <vue-tags-input
+          <vue3-tags-input
             class="form-control chat-input"
             v-model="sms.numbers"
             :tags="tags"
             placeholder="Enter phone number"
-            @tags-changed="(newTags) => (tags = newTags)"
+            @on-tags-changed="(newTags) => (tags = newTags)"
           />
           <div v-if="tags.length <= 0" class="invalid-feedback">
             <span>Numbers are required</span>
@@ -353,7 +353,7 @@
 import useValidate from '@vuelidate/core'
 import { required } from "@vuelidate/validators";
 import NumberList from "./inbox/NumberList.vue";
-import VueTagsInput from "@johmun/vue-tags-input";
+import Vue3TagsInput from 'vue3-tags-input'
 import ThemeButton from "@/components/ThemeButton.vue";
 import { post } from "../core/module/common.module";
 import Setting from "./setting/Setting.vue";
@@ -367,7 +367,7 @@ export default {
   name: "dashboard",
   components: {
     NumberList,
-    VueTagsInput,
+    Vue3TagsInput,
     ThemeButton,
     Setting,
     CallView,
