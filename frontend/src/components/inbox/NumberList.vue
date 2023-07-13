@@ -354,8 +354,8 @@ import { get, post } from '../../core/module/common.module'
 import PullToRefresh from 'pulltorefreshjs'
 import Setting from '@/components/setting/Setting.vue'
 import { EventBus } from '@/event-bus'
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
+const moment = require('moment')
+
 export default {
   components: {
     ProfileView, ThemeButton, Contact, Setting
@@ -859,8 +859,8 @@ export default {
           })
       }
     },
-    getLongDate(time) {
-      return moment(time).format('LLL');
+    getLongDate (time) {
+      return moment(time).format('LLL')
     }
   }
 }
