@@ -10,38 +10,35 @@
     </div>
 </template>
 
-<script>
-import TwilioSetting from './call/twilio/TwilioSetting.vue'
+<script setup>
+// import TwilioSetting from './call/twilio/TwilioSetting.vue'
+// import TelnyxSetting from './call/telnyx/TelnyxSetting.vue'
 import { EventBus } from '@/event-bus'
-import TelnyxSetting from './call/telnyx/TelnyxSetting.vue'
 import MessageSetting from './call/telnyx/MessageSetting.vue'
 import TwimlSetting from './call/twilio/TwimlSetting.vue'
-export default {
-  components: { TwilioSetting, TelnyxSetting, MessageSetting, TwimlSetting },
-  data () {
-    return {
-      setting: null,
-      activeMenu: 'setting'
-    }
-  },
-  mounted: function () {
-    console.log('load data')
-    EventBus.$on('changeProfile', this.getCallSetting)
-    this.getCallSetting()
-  },
-  methods: {
-    getCallSetting () {
-      // var profileLocal = localStorage.getItem('activeProfile')
-      var profileLocal = JSON.parse(localStorage.getItem('activeProfile'))
-      console.log(profileLocal)
-      if (profileLocal) {
-        // var activeProfile = JSON.parse(profileLocal)
-        this.setting = profileLocal
-      }
-    },
-    enableMenu (menu) {
-      this.activeMenu = menu
-    }
+import { onMounted, reactive } from 'vue'
+
+// TODO: Test this component
+const setting = reactive({})
+// const activeMenu = ref('setting')
+
+onMounted(() => {
+  console.log('load data')
+  EventBus.$on('changeProfile', getCallSetting)
+  getCallSetting()
+})
+
+function getCallSetting () {
+  // const profileLocal = localStorage.getItem('activeProfile')
+  const profileLocal = JSON.parse(localStorage.getItem('activeProfile'))
+  // console.log(profileLocal)
+  if (profileLocal) {
+    // const activeProfile = JSON.parse(profileLocal)
+    setting.value = profileLocal
   }
 }
+
+// function enableMenu (menu) {
+//   activeMenu.value = menu
+// }
 </script>
