@@ -12,14 +12,16 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { get } from './core/module/common.module'
+
+const oldVersion
 
 export default {
   name: 'App',
   data () {
     return {
-      old_version: false,
+      oldVersion: false,
       dir: ''
     }
   },
@@ -37,13 +39,13 @@ export default {
         .then((response) => {
           // console.log(response.update)
           if (response.update === 'true') {
-            this.old_version = true
+            this.oldVersion = true
           } else {
-            this.old_version = false
+            this.oldVersion = false
           }
         })
         .catch((e) => {
-          this.old_version = false
+          this.oldVersion = false
           console.log(e)
           // resolve(false)
         })

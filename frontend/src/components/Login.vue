@@ -330,7 +330,7 @@ export default {
           }
         })
         .catch((e) => {
-          this.old_version = false
+          this.oldVersion = false
           console.log(e)
           // resolve(false)
         })
