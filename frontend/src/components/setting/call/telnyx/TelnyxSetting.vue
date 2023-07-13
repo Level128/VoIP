@@ -48,28 +48,18 @@
       </div>
     </div>
 </template>
-<script>
+
+<script setup>
 import SipSetting from './SipSetting.vue'
 import TexmlSetting from './TexmlSetting.vue'
 import MessageSetting from './MessageSetting.vue'
+import { ref } from 'vue'
 // import TwilioNumberSetting from './TwilioNumberSetting.vue'
 // import TwimlSetting from './TwimlSetting.vue'
-export default {
-  components: { SipSetting, TexmlSetting, MessageSetting },
-  // components: { TwilioNumberSetting, TwimlSetting },
-  data () {
-    return {
-      activeMenu: 'setting'
-    }
-  },
-  mounted: function () {},
-  methods: {
-    enableMenu (menu) {
-      this.activeMenu = menu
-    }
-  }
+
+const activeMenu = ref('setting')
+
+function enableMenu (menu) {
+  activeMenu.value = menu
 }
 </script>
-<style>
-
-</style>
