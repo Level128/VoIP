@@ -8,29 +8,29 @@
                   <b-icon icon="envelope" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>Email Settings</li>
                 <!--<li class="list-group-item" @click="enableMenu('call')" style="cursor: pointer">
                   <b-icon icon="telephone-x" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>Call Settings</li> -->
-                <li class="list-group-item" v-b-modal.modal-1 style="cursor: pointer">
-                  <b-icon icon="person-badge" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>Profile Settings
-                </li>
-                <li class="list-group-item" @click="enableMenu('account')" style="cursor: pointer">
-                  <b-icon icon="person" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>Account Settings
-                </li>
-                <li class="list-group-item" @click="passwordEnable('mfa')" style="cursor: pointer">
-                  <b-icon icon="shield-lock" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>MFA Settings
-                </li>
-              </ul>
-              <div class="version">{{ versionOption }}</div>
-            </div>
-            <div v-if="activeMenu == 'email'">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <h4>Email Settings</h4>
-                </div>
-                <div class="p-2 bd-highlight">
-                  <b-icon icon="arrow-left" style="cursor: pointer" font-scale="2" aria-hidden="true" @click="enableMenu('setting')"></b-icon>
-                </div>
+              <li class="list-group-item" v-b-modal.modal-settings style="cursor: pointer">
+                <b-icon icon="person-badge" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>Profile Settings
+              </li>
+              <li class="list-group-item" @click="enableMenu('account')" style="cursor: pointer">
+                <b-icon icon="person" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>Account Settings
+              </li>
+              <li class="list-group-item" @click="passwordEnable('mfa')" style="cursor: pointer">
+                <b-icon icon="shield-lock" font-scale="1" aria-hidden="true" class="mx-2"></b-icon>MFA Settings
+              </li>
+            </ul>
+            <div class="version">{{ versionOption }}</div>
+          </div>
+          <div v-if="activeMenu == 'email'">
+            <div class="d-flex justify-content-between">
+              <div>
+                <h4>Email Settings</h4>
               </div>
-              <email-setting></email-setting>
+              <div class="p-2 bd-highlight">
+                <b-icon icon="arrow-left" style="cursor: pointer" font-scale="2" aria-hidden="true" @click="enableMenu('setting')"></b-icon>
+              </div>
             </div>
+            <email-setting></email-setting>
+          </div>
 
             <div v-if="activeMenu == 'call'">
               <div class="d-flex justify-content-between">

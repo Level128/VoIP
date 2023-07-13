@@ -17,7 +17,7 @@
               <b-icon font-scale="1" icon="telephone" aria-hidden="true" class="m-2" title="Call" @click="$bvModal.show('modal-dialer')"  style="cursor:pointer;"></b-icon>
             </div>
             <div class="bd-highlight">
-              <b-icon  v-b-modal.modal-2 font-scale="1" icon="pencil-square" aria-hidden="true" class="m-2" title="Compose" style="cursor:pointer;"></b-icon>
+              <b-icon  v-b-modal.modal-compose-msg font-scale="1" icon="pencil-square" aria-hidden="true" class="m-2" title="Compose" style="cursor:pointer;"></b-icon>
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
               </div>
             </template>
             <b-dropdown-divider></b-dropdown-divider>
-            <!-- <b-dropdown-item-button v-b-modal.modal-1  v-if="activeProfile">
+            <!-- <b-dropdown-item-button v-b-modal.modal-settings  v-if="activeProfile">
               <b-icon icon="gear-fill" aria-hidden="true"></b-icon>
               Settings
             </b-dropdown-item-button>
@@ -127,7 +127,7 @@
       </div>
     </div>
      <!-- setting modal -->
-    <b-modal ref="my-modal" id="modal-1" size="lg" title="Settings" hide-footer>
+    <b-modal ref="modal-settings" id="modal-settings" size="lg" title="Settings" hide-footer>
       <theme-button id-hide="false" />
       <form @submit.prevent="handleSubmit" class="ml-2 mr-2">
         <b-form-radio-group
@@ -634,7 +634,7 @@ export default {
                 this.twilioNumbers = []
                 this.activeProfile = response.data
                 localStorage.removeItem('activeProfile')
-                this.$refs['my-modal'].hide()
+                this.$refs['modal-settings'].hide()
                 this.$refs.childComponent.getallProfile()
                 var $this = this
                 setTimeout(function () {
@@ -808,7 +808,7 @@ export default {
                       .dispatch(post, request)
                       .then((response) => {
                         if (response) {
-                          this.$refs['my-modal'].hide()
+                          this.$refs['modal-settings'].hide()
                           this.activeProfile = response.data
                           this.hideShowDeleteIcon(response.data)
                           this.$refs.childComponent.getallProfile()
@@ -834,7 +834,7 @@ export default {
                   .dispatch(post, request)
                   .then((response) => {
                     if (response) {
-                      this.$refs['my-modal'].hide()
+                      this.$refs['modal-settings'].hide()
                       this.activeProfile = response.data
                       this.hideShowDeleteIcon(response.data)
                       this.$refs.childComponent.getallProfile()

@@ -251,8 +251,8 @@
     </section>
     <!-- modal -->
     <b-modal
-      ref="my-modal2"
-      id="modal-2"
+      ref="modal-compose-msg"
+      id="modal-compose-msg"
       size="lg"
       title="Compose Message"
       hide-footer
@@ -776,7 +776,7 @@ export default {
             if (this.activeChatData) {
               this.showChat(this.activeChat);
             }
-            this.$refs["my-modal2"].hide();
+            this.$refs["modal-compose-msg"].hide();
             if (this.vw < 576) {
               this.$refs["mySidebar2"].hide();
             }
