@@ -31,7 +31,6 @@ function checkDirectoryName () {
       }
     })
     .catch((e) => {
-      this.oldVersion = false
       console.error(e)
     })
 }
