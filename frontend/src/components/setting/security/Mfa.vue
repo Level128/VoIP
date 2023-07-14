@@ -52,127 +52,131 @@
       <div class="text-secondary text-center" id="clickText">Click On Key To Copy</div>
       <div class="form-group mt-1">
         <label>Enter Verification Code</label>
-        <input type="form-control" maxlength="6" v-model="verification_code" placeholder="000000" title="6 Digit Code" class="totp" @keyup.enter="verifyStatusCode()">
+        <input type="form-control" maxlength="6" v-model="verificationCode" placeholder="000000" title="6 Digit Code" class="totp" @keyup.enter="verifyStatusCode()">
       </div>
       <button type="button" @click="verifyStatusCode()" class="btn btn-success m-2 px-4">Verify</button>
     </div>
     <hardware-key />
   </div>
 </template>
-<script>
+
+<script setup>
+import { onMounted, ref } from 'vue'
 import { post } from '../../../core/module/common.module'
-import CallSetting from '../CallSetting.vue'
+// import CallSetting from '../CallSetting.vue'
 import HardwareKey from './HardwareKey.vue'
-export default {
-components: { CallSetting, HardwareKey },
-data () {
-  return {
-    mfaStatus: false,
-    realMfs: false,
-    qr: null,
-    verification_code: '',
-    secret: ''
+import Swal from 'sweetalert2'
+import { useStore } from 'vuex'
+
+const store = useStore()
+
+const mfaStatus = ref(false)
+const realMfs = ref(false)
+const qr = ref(null)
+const verificationCode = ref('')
+const secret = ref('')
+
+onMounted(() => getMfaStatus())
+
+function mfaStatusChange () {
+  const mfaStatusStr = mfaStatus.value ? 'true' : 'false'
+  if (!mfaStatus.value) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Software token will be deleted. You will have to reconfigure it!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        commonMfa({ status: mfaStatusStr, qr: 'true' })
+        qr.value = false
+      } else {
+        mfaStatus.value = true
+      }
+    })
+  } else {
+    commonMfa({ status: mfaStatusStr, qr: 'true' })
   }
-},
-mounted: function () {
-  this.getMfaStatus()
-},
-methods: {
-  mfaStatusChange () {
-    var status = this.mfaStatus ? 'true' : 'false'
-    if (!this.mfaStatus) {
-      this.$swal.fire({
-        title: 'Are you sure?',
-        text: 'Software token will be deleted. You will have to reconfigure it!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, remove it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.commonMfa({status: status, qr: 'true'})
-          this.qr = false
+}
+
+function commonMfa (mfaData) {
+  const request = {
+    data: mfaData,
+    url: 'auth/mfa/save'
+  }
+  store
+    .dispatch(post, request)
+    .then((response) => {
+      if (response) {
+        if (mfaData.status === 'true') {
+          qr.value = response.image
+          secret.value = response.secret
         } else {
-          this.mfaStatus = true
+          getMfaStatus()
         }
-      })
-    } else {
-      this.commonMfa({status: status, qr: 'true'})
-    }
-  },
-  commonMfa (data) {
-    var request = {
-      data: data,
-      url: 'auth/mfa/save'
-    }
-    this.$store
-      .dispatch(post, request)
-      .then((response) => {
-        if (response) {
-          if (data.status === 'true') {
-            this.qr = response.image
-            this.secret = response.secret
-          } else {
-            this.getMfaStatus()
-          }
-        }
-      })
-      .catch((e) => {
+      }
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
 
-      })
-  },
-  verifyStatusCode () {
-    if (this.verification_code === '') {
-      this.$swal.fire('Please enter verification code', '', 'error')
-      return
-    }
-    var request = {
-      data: {status: 'true', qr: 'false', code: this.verification_code},
-      url: 'auth/mfa/save'
-    }
-    this.$store
-      .dispatch(post, request)
-      .then((response) => {
-        if (response) {
-          this.qr = null
-          this.verification_code = ''
-          this.getMfaStatus()
-        }
-      })
-      .catch((e) => {
+function verifyStatusCode () {
+  if (verificationCode.value === '') {
+    Swal.fire('Please enter verification code', '', 'error')
+    return
+  }
+  const request = {
+    data: { status: 'true', qr: 'false', code: verificationCode.value },
+    url: 'auth/mfa/save'
+  }
+  store
+    .dispatch(post, request)
+    .then((response) => {
+      if (response) {
+        qr.value = null
+        verificationCode.value = ''
+        getMfaStatus()
+      }
+    })
+    .catch((e) => {
 
-      })
-  },
-  copySecret () {
-    try {
-      navigator.clipboard.writeText(this.secret)
-      const answer = document.getElementById('clickText')
-      answer.innerHTML = 'Copied!'
-    } catch (err) {
-      console.error('Failed to copy!', err)
-    }
-  },
-  getMfaStatus () {
-    var request = {
-      data: {},
-      url: 'auth/user/get'
-    }
-    this.$store
-      .dispatch(post, request)
-      .then((response) => {
-        var trueVar = true
-        var falseVar = false
-        this.realMfs = (response && response.data.mfa === 'true') ? trueVar : falseVar
-        this.mfaStatus = (response && response.data.mfa === 'true') ? trueVar : falseVar
-      })
-      .catch((e) => {
-        this.realMfs = false
-        this.mfaStatus = false
-      })
+    })
+}
+
+function copySecret () {
+  try {
+    navigator.clipboard.writeText(secret.value)
+    const answer = document.getElementById('clickText')
+    answer.innerHTML = 'Copied!'
+  } catch (err) {
+    console.error('Failed to copy!', err)
   }
 }
+
+function getMfaStatus () {
+  const request = {
+    data: {},
+    url: 'auth/user/get'
+  }
+  store
+    .dispatch(post, request)
+    .then((response) => {
+      const trueVar = true
+      const falseVar = false
+      realMfs.value = (response && response.data.mfa === 'true') ? trueVar : falseVar
+      mfaStatus.value = (response && response.data.mfa === 'true') ? trueVar : falseVar
+    })
+    .catch((e) => {
+      console.error(e)
+      realMfs.value = false
+      mfaStatus.value = false
+    })
 }
+
 </script>
 
 <style scoped>
