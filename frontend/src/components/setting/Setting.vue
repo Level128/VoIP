@@ -95,7 +95,7 @@
             <div  class="m-2">
               <div class="form-group">
                 <label>Password</label>
-                <input type="password" class="form-control" v-model="check_password" placeholder="Enter Password" @keyup.enter="checkPassword()">
+                <input type="password" class="form-control" v-model="password" placeholder="Enter Password" @keyup.enter="checkPassword()">
               </div>
               <div class="text-center">
               <button class="btn btn-success my-2 px-4" @click="checkPassword()">Verify</button>
@@ -105,74 +105,72 @@
       </b-sidebar>
   </div>
 </template>
-<script>
+
+<script setup>
 import EmailSetting from './EmailSetting.vue'
 import CallSetting from './CallSetting.vue'
 import AccountSetting from './account/AccountSetting.vue'
 import Mfa from './security/Mfa.vue'
 import { post } from '../../core/module/common.module'
-// import { post } from '../core/module/common.module'
-export default {
-components: { EmailSetting, CallSetting, AccountSetting, Mfa },
-data () {
-  return {
-    activeMenu: 'setting',
-    versionOption: 'v0',
-    checkpasswordMenu: '',
-    check_password: ''
-  }
-},
-mounted: function () {
-  this.getVersion()
-},
-methods: {
-  enableMenu (menu) {
-    this.activeMenu = menu
-  },
-  getVersion () {
-    var request = {
-      data: {},
-      url: 'auth/get-version'
-    }
-    this.$store
-      .dispatch(post, request)
-      .then((response) => {
-        if (response) {
-          this.versionOption = response.data
-        }
-      })
-      .catch((e) => {
+import { onMounted, ref } from 'vue'
+import { useStore } from 'vuex'
+import Swal from 'sweetalert2'
 
-      })
-  },
-  passwordEnable (menu) {
-    this.checkpasswordMenu = menu
-    this.enableMenu('password')
-  },
-  checkPassword () {
-    if (this.check_password === '') {
-      this.$swal.fire('please enter password', '', 'error')
-      return
-    }
-    var request = {
-      data: {password: this.check_password},
-      url: 'auth/password/verify'
-    }
-    this.$store
-      .dispatch(post, request)
-      .then((response) => {
-        if (response) {
-          this.check_password = ''
-          this.enableMenu(this.checkpasswordMenu)
-        }
-      })
-      .catch((e) => {
+const store = useStore()
 
-      })
+const activeMenu = ref('setting')
+const versionOption = ref('v0')
+const checkpasswordMenu = ref('')
+const password = ref('')
+
+onMounted(() => getVersion())
+
+function enableMenu (menu) {
+  activeMenu.value = menu
+}
+
+function getVersion () {
+  const request = {
+    data: {},
+    url: 'auth/get-version'
   }
+  store
+    .dispatch(post, request)
+    .then((response) => {
+      if (response) {
+        versionOption.value = response.data
+      }
+    })
+    .catch((e) => {
+      console.error(e)
+    })
 }
+
+function passwordEnable (menu) {
+  checkpasswordMenu.value = menu
+  enableMenu('password')
 }
+
+function checkPassword () {
+  if (password.value === '') {
+    Swal.fire('Please enter a password', '', 'error')
+    return
+  }
+  const request = {
+    data: { password: password.value },
+    url: 'auth/password/verify'
+  }
+  store
+    .dispatch(post, request)
+    .then((response) => {
+      if (response) {
+        password.value = ''
+        enableMenu(checkpasswordMenu.value)
+      }
+    })
+    .catch((e) => {
+      console.error(e)
+    })
+}
+
 </script>
-<style>
-
-</style>
